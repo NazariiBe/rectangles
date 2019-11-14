@@ -6,15 +6,15 @@ function combine(... fs: Function[]) {
     return flow(...fs.reverse())
 }
 
-function map<T>(f: (value: T, index: number, array: T[]) => unknown): Function {
+function map<T>(f: (value: T) => unknown): Function {
     return (arr: T[]) => arr.map(f)
 }
 
-function filter<T>(f: (value: T, index: number, array: unknown) => boolean): Function {
+function filter<T>(f: (value: T) => boolean): Function {
     return (arr: T[]) => arr.filter(f)
 }
 
-function reduce<T>(f: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T): Function {
+function reduce<T>(f: (previousValue: T, currentValue: T) => T): Function {
     return (arr: T[]) => arr.reduce(f)
 }
 
@@ -74,18 +74,11 @@ function hasColor(color: string): (r: Rectangle) => boolean {
 const isRed = hasColor("red")
 const isBlack = hasColor("black")
 
-function findBiggestRectangle(rects: Rectangle[]): Rectangle {
-    let biggest: Rectangle = rects[0];
-    rects.forEach((r: Rectangle) => {
-        if (r.getSquare() > biggest.getSquare()) biggest = r
-    })
-    return biggest;
-}
-
 flow(
     filter(isBlack),
     filter((r: Rectangle) => r.isQuadrate()),
-    findBiggestRectangle,
+    map((r: Rectangle) => r.getSquare()),
+    reduce((a: number, b: number) => a = Math.max(a, b)),
     console.log
 )(rectangles)
 
