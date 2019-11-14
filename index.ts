@@ -6,7 +6,7 @@ function combine(... fs: Function[]) {
     return flow(...fs.reverse())
 }
 
-function map<T>(f: (value: T) => unknown): Function {
+function map<T>(f: (value: T, index: number, array: T[]) => unknown): Function {
     return (arr: T[]) => arr.map(f)
 }
 
@@ -14,8 +14,11 @@ function filter<T>(f: (value: T) => boolean): Function {
     return (arr: T[]) => arr.filter(f)
 }
 
-function reduce<T>(f: (previousValue: T, currentValue: T) => T): Function {
-    return (arr: T[]) => arr.reduce(f)
+function reduce<T>(f: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T, initialValue?: T): Function {
+    if (initialValue != undefined)
+        return (arr: T[]) => arr.reduce(f, initialValue)
+    else
+        return (arr: T[]) => arr.reduce(f)
 }
 
 class Rectangle {
@@ -65,7 +68,7 @@ function getRandomInt(min: number, max: number): number {
 }
 
 const colors: string[] = ["red", "green", "blue", "black"]
-const rectangles: Rectangle[] = generateRectangles(200)
+const rectangles: Rectangle[] = generateRectangles(100)
 
 function hasColor(color: string): (r: Rectangle) => boolean {
     return (r: Rectangle) => r.getColor() == color
@@ -78,13 +81,13 @@ flow(
     filter(isBlack),
     filter((r: Rectangle) => r.isQuadrate()),
     map((r: Rectangle) => r.getSquare()),
-    reduce((a: number, b: number) => a = Math.max(a, b)),
+    reduce((a: number, b: number) => a = Math.max(a, b), 0),
     console.log
 )(rectangles)
 
 flow(
     filter(isRed),
     map((r: Rectangle) => r.getPerimeter()),
-    reduce((result: number, current) => result += current),
+    reduce((result: number, current: number) => result += current, 0),
     console.log
 )(rectangles)
