@@ -36,6 +36,14 @@ class Rectangle {
     public getPerimeter(): number {
         return this.width * 2 + this.height * 2
     }
+
+    public getSquare(): number {
+        return this.height * this.width;
+    }
+
+    public isQuadrate(): boolean {
+        return this.width == this.height
+    }
 }
 
 function generateRectangles(totalCount: number): Rectangle[] {
@@ -66,8 +74,18 @@ function hasColor(color: string): (r: Rectangle) => boolean {
 const isRed = hasColor("red")
 const isBlack = hasColor("black")
 
+function findBiggestRectangle(rects: Rectangle[]): Rectangle {
+    let biggest: Rectangle = rects[0];
+    rects.forEach((r: Rectangle) => {
+        if (r.getSquare() > biggest.getSquare()) biggest = r
+    })
+    return biggest;
+}
+
 flow(
     filter(isBlack),
+    filter((r: Rectangle) => r.isQuadrate()),
+    findBiggestRectangle,
     console.log
 )(rectangles)
 
