@@ -1,5 +1,5 @@
 function flow(... fs: Function[]) {
-    return (val) => fs.reduce((result, f) => f(result), val)
+    return (val: any) => fs.reduce((result, f) => f(result), val)
 }
 
 function combine(... fs: Function[]) {
